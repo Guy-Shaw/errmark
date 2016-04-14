@@ -7,7 +7,7 @@ to distinguish it from stdout
 when both stdout and stderr are connected to the
 same file (usually a pseudo-terminal).
 
-It does this without modifiying the program
+It does this without modifying the program
 or doing any "normal" I/O redirection.
 
 `errmark` can also make a copy of stderr.
@@ -31,7 +31,7 @@ are no longer open to a pseudo-terminal,
 whether it be the same device or not.
 For example, buffering is different.
 If the buffering were the only problem,
-then it could be fixed using stdbuf or
+then it could be fixed using `stdbuf` or
 a 'pty' program.  But, then stdout and stderr
 are still not mixed the way they are when
 both are open to the same pseudo-terminal.
@@ -60,7 +60,7 @@ of both pty's, monitor what is written to stout and stderr.
 2) use `LD_PRELOAD` to substitute calls to `write()`.
 
 3) write a driver for a new kind of pty-like device
-that is cabable of serializing the output of `write()`
+that is capable of serializing the output of `write()`
 system calls, and can distinguish writes
 coming from different file descriptors.
 
@@ -73,15 +73,15 @@ This is not just due to buffering of I/O
 in a process, such as is done in stdio.
 Even in the case of a series of raw `write()` system calls,
 only the order of writes to the same device
-are guranteed to be visible in the order of the `write()`
-system calls; nothing is prmised about the order of
+are guaranteed to be visible in the order of the `write()`
+system calls; nothing is promised about the order of
 data visible between writes to different devices.
 
 The problem with the `LD_PRELOAD` method is that
 glibc can call `write()` as a result of lower-level
 stdio functions, and those do not get linked
 to a dynamically loaded/linked override `write()`
-function.  Only explicit calls to i`write()`
+function.  Only explicit calls to `write()`
 are overridden.
 
 
@@ -139,7 +139,7 @@ This example shows how fuser intermixes stdout and stderr.
 ```
 
 If tar encounters errors,
-such as ownership / permision problems,
+such as ownership / permission problems,
 those error messages could be buried among hundreds or thousands
 of lines of filenames.
 
