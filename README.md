@@ -51,7 +51,7 @@ making a transition between between fd/1 and fd/2.
 
 One might think there would be an easier way
 to solve this problem.
-Two other possibilities are:
+Three other possibilities are:
 
 1) redirect stdout and stderr to two different pseudo-terminals,
 then run the child program and, as the master side
