@@ -108,9 +108,9 @@ also partly because of GCC extensions.
 The coding style used for `ush` can most briefly be described as Sun cstyle, but with certain changes.
 
 They are:
-.+ tabs instead of spaces
-.+ 4 character indent, instead of 8
-.+ no cuddling of braces
+..+ tabs instead of spaces
+..+ 4 character indent, instead of 8
+..+ no cuddling of braces
 
 ## No limits
 
