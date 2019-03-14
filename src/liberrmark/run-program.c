@@ -1,3 +1,38 @@
+/*
+ * Filename: src/liberrmark/run-command.c
+ * Project: errmark
+ * Library: liberrmark
+ * Brief: Run a given program; intercept and mark stderr
+ *
+ * Copyright (C) 2016-2019 Guy Shaw
+ * Written by Guy Shaw <gshaw@acm.org>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include <cscript.h>     // for eprintf, fshow_wait_status, guard_malloc, debug
+#include <errmark.h>     // for cmd_t, guard_ptrace, mark_close, after_write
+#include <signal.h>      // for SIGCHLD, SIGTRAP
+#include <stdbool.h>     // for false
+#include <stddef.h>      // for NULL, size_t
+#include <stdio.h>       // for fprintf, fwrite, stderr, perror, stdout
+#include <stdlib.h>      // for exit
+#include <sys/ptrace.h>  // for PTRACE_SETREGS, PTRACE_GETREGS, PTRACE_SYSCALL
+#include <sys/user.h>    // for user_regs_struct
+#include <sys/wait.h>    // for wait, WSTOPSIG, WIFSTOPPED
+#include <syscall.h>     // for SYS_write
+#include <unistd.h>      // for execvp, fork, sleep
 #include <errmark.h>
 #include <cscript.h>
 

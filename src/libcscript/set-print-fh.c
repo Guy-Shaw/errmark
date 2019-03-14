@@ -28,12 +28,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <fcntl.h>
+    // Import fstat()
+#include <stddef.h>
+    // Import constant NULL
 #include <stdio.h>
-#include <sys/types.h>
+    // Import fopen()
+    // Import stderr()
+    // Import stdout()
+    // Import type FILE
+    // Import var stderr
+    // Import var stdout
+#include <stdlib.h>
+    // Import getenv()
+#include <string.h>
+    // Import memcmp()
 #include <sys/stat.h>
+    // Import fstat()
+#include <sys/types.h>
+    // Import fstat()
 #include <unistd.h>
-#include <string.h>             // Import memcmp()
+    // Import fstat()
 
+extern char *program_name;
 extern FILE *errprint_fh;
 extern FILE *dbgprint_fh;
 
@@ -42,10 +59,7 @@ struct fid {
     ino_t ino;
 };
 
-/**
- * @brief Determine if stdout and stderr resolve to the same file.
- * @return 0: OK, not 0: error
- *
+/*
  * Compare the dev+ino of stdout and stderr
  *
  * Return:
@@ -67,38 +81,78 @@ stderr_redirected(void)
     }
     stdout_id.dev = statbuf.st_dev;
     stdout_id.ino = statbuf.st_ino;
+
     rv = fstat(2, &statbuf);
     if (rv != 0) {
         return (-1);
     }
     stderr_id.dev = statbuf.st_dev;
     stderr_id.ino = statbuf.st_ino;
+
     rv = memcmp(&stderr_id, &stdout_id, sizeof (struct fid));
     rv = (rv != 0);
     return (rv);
 }
 
 /**
- * @brief Standard setup for the file handles, |errprint_fh|, and |dbgprint_fh|.
+ * @brief Standard setup for the file handle, |errprint_fh|.
  *
- * The file handles, |errprint_fh|, and |dbgprint_fh| are both set
- * depending on whether |stdout| and |stderr| are directoed to the
- * same underlying file.
+ * The file handle, |errprint_fh|, is set  depending on whether
+ * |stdout| and |stderr| are directed to the same underlying file.
  *
  */
+
 void
-set_print_fh(void)
+set_eprint_fh(void)
 {
     int rv;
-    FILE *new_fh;
+    FILE *efh;
 
     rv = stderr_redirected();
-    new_fh = (rv == 0) ? stdout : stderr;
+    efh = (rv == 0) ? stdout : stderr;
 
     if (errprint_fh == NULL) {
-        errprint_fh = new_fh;
+        errprint_fh = efh;
     }
-    if (dbgprint_fh == NULL) {
-        dbgprint_fh = new_fh;
+}
+
+/**
+ * @brief Setup the file handle, |dbgprint_fh|.
+ *
+ */
+
+void
+set_debug_fh(const char *dbg_fname)
+{
+    char dbg_envar[32];
+
+    if (dbg_fname == NULL) {
+        dbgprint_fh = NULL;
+        return;
     }
+
+    if (dbg_fname[0] != '\0') {
+        dbgprint_fh = fopen(dbg_fname, "w");
+        return;
+    }
+
+    snprintf(dbg_envar, sizeof (dbg_envar), "DEBUG.%s", program_name);
+    dbg_fname = getenv(dbg_envar);
+    if (dbg_fname) {
+        dbgprint_fh = fopen(dbg_fname, "w");
+        if (dbgprint_fh) {
+            return;
+        }
+    }
+
+    dbgprint_fh = fopen("/proc/fd/self/3", "w");
+    if (dbgprint_fh) {
+        return;
+    }
+
+    dbgprint_fh = errprint_fh;
+    if (dbgprint_fh) {
+        return;
+    }
+    dbgprint_fh = stderr;
 }

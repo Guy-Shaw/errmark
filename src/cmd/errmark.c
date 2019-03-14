@@ -174,7 +174,7 @@ main(int argc, char * const *argv)
     int optc;
     int rv;
 
-    set_print_fh();
+    set_eprint_fh();
     program_path = *argv;
     program_name = sname(program_path);
     option_index = 0;

@@ -105,7 +105,8 @@ also partly because of GCC extensions.
 
 ## Coding style
 
-The coding style used for `ush` can most briefly be described as Sun cstyle, but with certain changes.
+The coding style used for `errmark` can most briefly be described
+as Sun cstyle, but with certain changes.
 
 They are:
 
